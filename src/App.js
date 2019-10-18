@@ -1,27 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
+import Drawer from './Drawer';
+import Login from './Login';
 
-class App extends Component {
-  constructor() {
-    super();
-    this.viewer = React.createRef();
-    this.docViewer = null;
-    this.annotManager = null;
-    this.instance = null;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false,
+      user: null
+    }
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    console.log(window.WebViewer);
+  handleSubmit(user) {
+    this.setState({
+      loggedIn: true,
+      user
+    })
+    console.log(user);
   }
 
   render() {
-    return (
-      <div className="App">
-        <div className="header">React sample</div>
-        <div className="webviewer" ref={this.viewer}></div>
-      </div>
-    );
+    if(this.state.loggedIn) {
+      return <Drawer user={this.state.user} />;
+    } else {
+      return <Login handleSubmit={this.handleSubmit} />;
+    }
   }
 }
+
+
 
 export default App;
