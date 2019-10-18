@@ -27,5 +27,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@pdftron/webviewer-downloader": "^1.0.7",
+    "btoa": "^1.2.1",
+    "download": "^7.1.0",
+    "fs-extra": "^7.0.1"
   }
 }

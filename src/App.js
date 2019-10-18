@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super();
+    this.viewer = React.createRef();
+    this.docViewer = null;
+    this.annotManager = null;
+    this.instance = null;
+  }
+
+  componentDidMount() {
+    console.log(window.WebViewer);
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <div className="header">React sample</div>
+        <div className="webviewer" ref={this.viewer}></div>
+      </div>
+    );
+  }
 }
 
 export default App;
