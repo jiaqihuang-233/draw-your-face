@@ -3,13 +3,14 @@ import React from 'react';
 class Login extends React.Component {
     constructor(props) {
       super(props);
-      this.state = {value: 'coconut'};
+      this.state = {value: 'Mboopi'};
   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
   
     handleChange(event) {
+      console.log(event.target.value)
       this.setState({value: event.target.value});
     }
   
@@ -20,14 +21,14 @@ class Login extends React.Component {
   
     render() {
       return <div className="users">
-        <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
+        <form onSubmit={this.handleSubmit} >
         <label>
           Pick a user: <br></br>
-          <select>
-          <option value="mboopi">Mboopi</option>
-            <option value="vvd">Van Dijk</option>
-            <option value="neymar">Neymar</option>
-            <option value="dybala">Dybala</option>
+          <select onChange={this.handleChange}>
+          <option value="Mboopi">Mboopi</option>
+            <option value="Van Dijk">Van Dijk</option>
+            <option value="Neymar">Neymar</option>
+            <option value="Dybala">Dybala</option>
           </select>
         </label>
         <input type="submit" value="Submit" />
