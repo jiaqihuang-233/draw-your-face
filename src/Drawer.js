@@ -80,15 +80,6 @@ class Drawer extends React.Component {
   setHeader() {
     this.instance.setHeaderItems(header => {
       const items = header.getItems();
-      const removed = items.filter(
-        item =>
-          !(
-            item.type === "toolButton" ||
-            item.type === "statefulButton" ||
-            (item.type === "toolGroupButton" &&
-              item.toolGroup !== "freeHandTools")
-          )
-      );
       const saveButton = {
         type: "actionButton",
         img: saveImg,
@@ -96,14 +87,15 @@ class Drawer extends React.Component {
           const xfdfString = this.docViewer
             .getAnnotationManager()
             .exportAnnotations();
-          const data = await this.docViewer
-            .getDocument()
-            .getFileData({ xfdfString });
           // //download
+          // const data = await this.docViewer
+          // .getDocument()
+          // .getFileData({ xfdfString });
           // const blob = new Blob([new Uint8Array(data)], {
           //   type: "application/pdf"
           // });
           // saveAs(blob, this.props.user + '.pdf');
+
           //export and save annotations
           this.props.handleFileSave(this.timestampText.Id, xfdfString);
         }
@@ -117,7 +109,7 @@ class Drawer extends React.Component {
         }
       };
 
-      const updatedButtons = [...removed, saveButton, leaveButton];
+      const updatedButtons = [...items, saveButton, leaveButton];
       header.update(updatedButtons);
     });
   }
@@ -125,15 +117,13 @@ class Drawer extends React.Component {
   createTimeStamp(time) {
     const Annotations = this.instance.Annotations;
     const timestamp = new Annotations.FreeTextAnnotation();
-    timestamp.setWidth(300);
-    timestamp.setHeight(40);
-    /**@TODO position the timestamp on the right bottom of the page without magic numbers */
+    const h = 40;
+    const w = 300;
+    timestamp.setWidth(w);
+    timestamp.setHeight(h);
     // viewer coordinates, see - https://www.pdftron.com/documentation/web/guides/coordinates
-    const zoom = this.docViewer.getZoom();
-    // timestamp.setX(this.docViewer.getPageWidth(0)*zoom - 300);
-    // timestamp.setY(this.docViewer.getPageHeight(0)*zoom/2);
-    timestamp.setX(330);
-    timestamp.setY(420);
+    timestamp.setX(this.docViewer.getPageWidth(0) - w);
+    timestamp.setY(this.docViewer.getPageHeight(0) - h);
     timestamp.MaintainAspectRatio = true;
     timestamp.TextAlign = "center";
     timestamp.ReadOnly = true;
