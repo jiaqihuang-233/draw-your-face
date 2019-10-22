@@ -1,7 +1,6 @@
 import React from "react";
 import { observable } from "mobx";
-import { saveAs } from 'file-saver';
-import { saveImg, leaveImg } from './icons';
+import { saveImg, leaveImg } from "./icons";
 
 const moment = require("moment");
 
@@ -29,19 +28,36 @@ class Drawer extends React.Component {
     this.docViewer = instance.docViewer;
     this.annotManager = instance.annotManager;
 
-    instance.setAdminUser(true);
     instance.setAnnotationUser(this.props.user);
 
-    this.docViewer.on('documentLoaded', () => {
-        //load annotations for this user if it exists
-        if(this.props.annos) {
-            const {annotations, timestampId} = this.props.annos;
-            this.annotManager.importAnnotations(annotations); //won't work if document hasn't loaded yet
-            this.timestampText = this.annotManager.getAnnotationById(timestampId);
-        }
-    });
-    this.annoListLength = observable.box(this.annotManager.getAnnotationsList().length);
+    //only enable freehand tool
+    instance.disableTools();
+    instance.enableTools(["AnnotationCreateFreeHand"]);
 
+    //disable search button and left comment panel
+    instance.disableElements(["searchButton", "leftPanel", "leftPanelButton"]);
+
+    //set default annotation style for drawing pen
+    this.docViewer.getTool("AnnotationCreateFreeHand").setStyles(() => {
+      return {
+        StrokeThickness: 5,
+        StrokeColor: new instance.Annotations.Color(0, 0, 255)
+      };
+    });
+
+    this.docViewer.on("documentLoaded", () => {
+      //load annotations for this user if it exists
+      if (this.props.annos) {
+        const { annotations, timestampId } = this.props.annos;
+        this.annotManager.importAnnotations(annotations); //won't work if document hasn't loaded yet
+        this.timestampText = this.annotManager.getAnnotationById(timestampId);
+      }
+    });
+
+    //observe on the number of annotations
+    this.annoListLength = observable.box(
+      this.annotManager.getAnnotationsList().length
+    );
     this.annoListLength.observe(change => {
       if (change.newValue === 1) {
         this.createTimeStamp(Date.now());
@@ -63,43 +79,47 @@ class Drawer extends React.Component {
 
   setHeader() {
     this.instance.setHeaderItems(header => {
-        const items = header.getItems();
-        const removed = items.filter(
-          item =>
-            !(
-              item.type === "toolButton" ||
-              item.type === "statefulButton" ||
-              (item.type === "toolGroupButton" &&
-                item.toolGroup !== "freeHandTools")
-            )
-        );
-        const saveButton = {
-          type: "actionButton",
-          img: saveImg,
-          onClick: async () => {
-            const xfdfString = this.docViewer.getAnnotationManager().exportAnnotations();
-            const data = await this.docViewer.getDocument().getFileData({xfdfString});
-            //download
-            const blob = new Blob([new Uint8Array(data)], {
-              type: "application/pdf"
-            });
-            saveAs(blob, this.props.user + '.pdf');
-            //export and save annotations
-            this.props.handleFileSave(this.timestampText.Id, xfdfString);
-          }
-        };
+      const items = header.getItems();
+      const removed = items.filter(
+        item =>
+          !(
+            item.type === "toolButton" ||
+            item.type === "statefulButton" ||
+            (item.type === "toolGroupButton" &&
+              item.toolGroup !== "freeHandTools")
+          )
+      );
+      const saveButton = {
+        type: "actionButton",
+        img: saveImg,
+        onClick: async () => {
+          const xfdfString = this.docViewer
+            .getAnnotationManager()
+            .exportAnnotations();
+          const data = await this.docViewer
+            .getDocument()
+            .getFileData({ xfdfString });
+          // //download
+          // const blob = new Blob([new Uint8Array(data)], {
+          //   type: "application/pdf"
+          // });
+          // saveAs(blob, this.props.user + '.pdf');
+          //export and save annotations
+          this.props.handleFileSave(this.timestampText.Id, xfdfString);
+        }
+      };
 
-        const leaveButton = {
-            type: "actionButton",
-            img: leaveImg,
-            onClick: () => {
-                this.props.handleLogout();
-            }
-        };
+      const leaveButton = {
+        type: "actionButton",
+        img: leaveImg,
+        onClick: () => {
+          this.props.handleLogout();
+        }
+      };
 
-        const updatedButtons = [...removed, saveButton, leaveButton];
-        header.update(updatedButtons);
-      });
+      const updatedButtons = [...removed, saveButton, leaveButton];
+      header.update(updatedButtons);
+    });
   }
 
   createTimeStamp(time) {
@@ -107,9 +127,13 @@ class Drawer extends React.Component {
     const timestamp = new Annotations.FreeTextAnnotation();
     timestamp.setWidth(300);
     timestamp.setHeight(40);
-    /**@TODO position the timestamp on the right bottom of the page */
+    /**@TODO position the timestamp on the right bottom of the page without magic numbers */
+    // viewer coordinates, see - https://www.pdftron.com/documentation/web/guides/coordinates
+    const zoom = this.docViewer.getZoom();
+    // timestamp.setX(this.docViewer.getPageWidth(0)*zoom - 300);
+    // timestamp.setY(this.docViewer.getPageHeight(0)*zoom/2);
     timestamp.setX(330);
-    timestamp.setY(420); 
+    timestamp.setY(420);
     timestamp.MaintainAspectRatio = true;
     timestamp.TextAlign = "center";
     timestamp.ReadOnly = true;
