@@ -22,10 +22,19 @@ class App extends React.Component {
 
   handleFileSave = (timestampId, annotations) => {
     this.setState((state, props) => {
-      state.userAnnotations[this.state.user] = {
+      const userAnno = {};
+      userAnno[this.state.user] = {
         timestampId,
         annotations
       };
+      const userAnnotations = {
+        ...state.userAnnotations,
+        ...userAnno
+      }
+      return {
+        ...state,
+        userAnnotations
+      }
     });
   }
 
