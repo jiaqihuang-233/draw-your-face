@@ -1,5 +1,4 @@
 import React from "react";
-import { observable } from "mobx";
 import { saveImg, leaveImg } from "./icons";
 
 const moment = require("moment");
@@ -54,25 +53,20 @@ class Drawer extends React.Component {
       }
     });
 
-    //observe on the number of annotations
-    this.annoListLength = observable.box(
-      this.annotManager.getAnnotationsList().length
-    );
-    this.annoListLength.observe(change => {
-      if (change.newValue === 1) {
-        this.createTimeStamp(Date.now());
-      } else if (change.newValue > 2 && this.timestampText) {
-        this.updateTimeStamp(Date.now());
-      }
-    });
-
     //disable other anno tools except for freehand
     this.setHeader();
 
     //add event listener for annotation added
     this.annotManager.on("annotationChanged", (event, annotations, action) => {
       if (action === "add") {
-        this.annoListLength.set(this.annotManager.getAnnotationsList().length);
+        const currLength = this.annotManager.getAnnotationsList().length;
+        if(currLength !== this.annoListLength) {
+          if(currLength === 1) {
+            this.createTimeStamp(Date.now());
+          } else if(currLength > 2 && this.timestampText){
+            this.updateTimeStamp(Date.now());
+          }
+        }
       }
     });
   }
