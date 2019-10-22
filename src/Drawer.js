@@ -44,6 +44,7 @@ class Drawer extends React.Component {
       };
     });
 
+    //listeners should always be unregistered in componentWillUnmount()
     this.docViewer.on("documentLoaded", () => {
       //load annotations for this user if it exists
       if (this.props.annos) {
@@ -69,6 +70,12 @@ class Drawer extends React.Component {
         }
       }
     });
+  }
+
+  componentWillUnmount() {
+    //unregister event listeners
+    this.docViewer.off("annotationChanged");
+    this.docViewer.off();
   }
 
   setHeader() {
