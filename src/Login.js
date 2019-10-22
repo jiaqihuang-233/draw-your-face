@@ -10,7 +10,6 @@ class Login extends React.Component {
     }
   
     handleChange(event) {
-      console.log(event.target.value)
       this.setState({value: event.target.value});
     }
   
@@ -20,11 +19,12 @@ class Login extends React.Component {
     }
   
     render() {
-      return <div className="users">
-        <form onSubmit={this.handleSubmit} >
+      return <div className="login">
+        <form onSubmit={this.handleSubmit}>
+          <div className="selection">
         <label>
           Pick a user: <br></br>
-          <select onChange={this.handleChange}>
+          <select className='users'onChange={this.handleChange}>
           <option value="Mboopi">Mboopi</option>
             <option value="Van Dijk">Van Dijk</option>
             <option value="Neymar">Neymar</option>
@@ -32,6 +32,7 @@ class Login extends React.Component {
           </select>
         </label>
         <input type="submit" value="Submit" />
+        </div>
       </form>
     </div>
     }

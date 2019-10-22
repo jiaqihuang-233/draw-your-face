@@ -35,10 +35,8 @@ class Drawer extends React.Component {
     this.docViewer.on('documentLoaded', () => {
         //load annotations for this user if it exists
         if(this.props.annos) {
-            console.log(this.props.annos);
             const {annotations, timestampId} = this.props.annos;
             this.annotManager.importAnnotations(annotations); //won't work if document hasn't loaded yet
-            console.log(this.annotManager.getAnnotationsList());
             this.timestampText = this.annotManager.getAnnotationById(timestampId);
         }
     });
@@ -62,7 +60,6 @@ class Drawer extends React.Component {
       }
     });
   }
-
 
   setHeader() {
     this.instance.setHeaderItems(header => {

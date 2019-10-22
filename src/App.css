@@ -15,3 +15,19 @@
     line-height: 44px;
     color: white;
   }
+
+  .login {
+      margin: auto;
+      width: 30%;
+      padding-top: 100px;
+  }
+
+  .selection {
+    padding-left: 30%;
+    font-size: 20px;
+  }
+
+  .selection .users {
+    font-size: 20px;
+    margin: 10px;
+  }
