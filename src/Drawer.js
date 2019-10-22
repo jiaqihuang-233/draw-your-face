@@ -75,7 +75,7 @@ class Drawer extends React.Component {
   componentWillUnmount() {
     //unregister event listeners
     this.docViewer.off("annotationChanged");
-    this.docViewer.off();
+    this.docViewer.off("documentLoaded");
   }
 
   setHeader() {
