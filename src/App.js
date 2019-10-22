@@ -11,19 +11,16 @@ class App extends React.Component {
       user: null,
       userAnnotations: {}
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFileSave = this.handleFileSave.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
-  handleSubmit(user) {
+  handleSubmit = (user) => {
     this.setState({
       loggedIn: true,
       user
     });
   }
 
-  handleFileSave(timestampId, annotations) {
+  handleFileSave = (timestampId, annotations) => {
     this.setState((state, props) => {
       state.userAnnotations[this.state.user] = {
         timestampId,
@@ -32,7 +29,7 @@ class App extends React.Component {
     });
   }
 
-  handleLogout() {
+  handleLogout = () => {
     this.setState({
       loggedIn: false
     });
